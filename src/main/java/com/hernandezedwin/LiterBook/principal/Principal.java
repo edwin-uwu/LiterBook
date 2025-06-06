@@ -32,6 +32,8 @@ public class Principal {
                 case 0:
                     System.out.println("Cerrando ...");
                     break;
+                default:
+                    System.out.println("Opción inválida");
             }
         }
     }
@@ -49,8 +51,9 @@ public class Principal {
         var json = api.DatosAPI(URL + "?search=" + tituloLibro.replace(" ","%20"));
         //System.out.println(json);
         var datos = conversor.obtenerDatos(json, DatosLibros.class);
-        //System.out.printf(datos.libro().get(0).titulo().toString());
-        System.out.printf("""
+        if(datos != null && !datos.libro().isEmpty()){
+            //System.out.printf(datos.libro().get(0).titulo().toString());
+            System.out.printf("""
                 **** Libro ****
                 Título: %s
                 Autor: %s
@@ -58,11 +61,15 @@ public class Principal {
                 Descargas: %s
                 \n
                 """,
-                datos.libro().get(0).titulo(),
-                datos.libro().get(0).autor()
-                        .stream().map(DatosAutor::nombre)
-                        .collect(Collectors.joining()),
-                datos.libro().get(0).idioma(),
-                datos.libro().get(0).numeroDeDescargas());
+                    datos.libro().get(0).titulo(),
+                    datos.libro().get(0).autor()
+                            .stream().map(DatosAutor::nombre)
+                            .collect(Collectors.joining()),
+                    datos.libro().get(0).idioma(),
+                    datos.libro().get(0).numeroDeDescargas());
+        }else{
+            System.out.println("Libro no encontrado");
+        }
+
     }
 }
