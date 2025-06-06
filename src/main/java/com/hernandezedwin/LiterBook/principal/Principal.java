@@ -3,9 +3,14 @@ package com.hernandezedwin.LiterBook.principal;
 import com.hernandezedwin.LiterBook.model.DatosAutor;
 import com.hernandezedwin.LiterBook.model.DatosLibro;
 import com.hernandezedwin.LiterBook.model.DatosLibros;
+import com.hernandezedwin.LiterBook.model.Libro;
+import com.hernandezedwin.LiterBook.repository.LibroRepository;
 import com.hernandezedwin.LiterBook.service.ConsumoApiService;
 import com.hernandezedwin.LiterBook.service.ConversorDatos;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.crypto.spec.PSource;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -14,6 +19,13 @@ public class Principal {
     private final String URL = "https://gutendex.com/books/";
     private ConsumoApiService api= new ConsumoApiService();
     private ConversorDatos conversor = new ConversorDatos();
+    @Autowired
+    private LibroRepository repository;
+
+    public Principal(LibroRepository repository){
+        this.repository = repository;
+    }
+
     public void menu()
     {
         int opcion = 1;
@@ -67,6 +79,15 @@ public class Principal {
                             .collect(Collectors.joining()),
                     datos.libro().get(0).idioma(),
                     datos.libro().get(0).numeroDeDescargas());
+            Libro libroEncontrado = new Libro(datos.libro().get(0));
+
+            Optional<Libro> tituloEncontrado = repository.findByTitulo(datos.libro().get(0).titulo());
+            if(!tituloEncontrado.isPresent()){
+                repository.save(libroEncontrado);
+            }else{
+                System.out.println("Titulo encontrado en base de datos");
+            }
+
         }else{
             System.out.println("Libro no encontrado");
         }
