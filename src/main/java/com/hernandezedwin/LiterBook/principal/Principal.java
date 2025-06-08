@@ -9,10 +9,7 @@ import com.hernandezedwin.LiterBook.service.ConversorDatos;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.crypto.spec.PSource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -131,11 +128,25 @@ public class Principal {
         }
     }
     private void listarAutores(){
+        //List<AutorDTO> listaAutores = new ArrayList<>();
         List<Libro> autores = repository.findAll();
-        List<AutorDTO> listaAutores = new ArrayList<>();
+        Set<AutorDTO>  listaAutores = new HashSet<>();
+
 
         System.out.println("Autores" + autores.size());
-        for(Libro libroActual: autores)
+        autores.forEach(l ->{
+            l.getAutores().forEach(a->{
+                AutorDTO autorBusqueda = new AutorDTO(
+                        0L,
+                        a.getNombre(),
+                        a.getFechaNacimiento(),
+                        a.getFechaMuerte()
+                );
+                listaAutores.add(autorBusqueda);
+            });
+        });
+
+        /*for(Libro libroActual: autores)
         {
             System.out.println("Libro: " + libroActual.getTitulo());
             for(var listaAuto: libroActual.getAutores()){
@@ -152,20 +163,19 @@ public class Principal {
                     System.out.println("Ya existe");
                 }
             }
-        }
+        }*/
 
         System.out.println("Lista de autores");
-        for (var lista : listaAutores)
-        {
+        listaAutores.forEach(a->{
             System.out.printf("""
                     Autor: %s
                     Año de Nacimiento: %s
                     Año de muerte: %s
                     \n
-                    """,lista.nombre(),
-                    lista.fechaNacimiento() == null ? "N/A" : lista.fechaNacimiento(),
-                    lista.fechaMuerte() == null ?"N/A":lista.fechaMuerte());
-        }
+                    """,a.nombre(),
+                    a.fechaNacimiento() == null ? "N/A" :a.fechaNacimiento(),
+                    a.fechaMuerte() == null ?"N/A":a.fechaMuerte());
+        });
         /*for (int i=0; i < autores.size();i++)
         {
             List<AutorDTO> libroActual = autores.get(0).getAutores().stream()
