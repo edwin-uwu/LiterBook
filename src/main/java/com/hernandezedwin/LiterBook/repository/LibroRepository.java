@@ -11,7 +11,4 @@ import java.util.Optional;
 public interface LibroRepository extends JpaRepository<Libro,Long> {
     Optional<Libro> findByTitulo(String nombreLibro);
     List<Libro> findAll();
-
-    @Query("SELECT a FROM Autor a JOIN FETCH a.libro")
-    List<Autor> listarAutoresConLibros();
 }

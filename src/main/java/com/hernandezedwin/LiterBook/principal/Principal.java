@@ -1,20 +1,20 @@
 package com.hernandezedwin.LiterBook.principal;
 
+import com.hernandezedwin.LiterBook.dto.AutorDTO;
 import com.hernandezedwin.LiterBook.dto.LibroDTO;
-import com.hernandezedwin.LiterBook.model.DatosAutor;
-import com.hernandezedwin.LiterBook.model.DatosLibro;
-import com.hernandezedwin.LiterBook.model.DatosLibros;
-import com.hernandezedwin.LiterBook.model.Libro;
+import com.hernandezedwin.LiterBook.model.*;
 import com.hernandezedwin.LiterBook.repository.LibroRepository;
 import com.hernandezedwin.LiterBook.service.ConsumoApiService;
 import com.hernandezedwin.LiterBook.service.ConversorDatos;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.crypto.spec.PSource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Principal {
     private Scanner teclado = new Scanner(System.in);
@@ -36,6 +36,7 @@ public class Principal {
                 \t\tMenu
                 1- Buscar libro por titulo
                 2- Lista de libros
+                3- Listar autores
                 0- Salir
                 """);
             opcion = teclado.nextInt();
@@ -130,10 +131,52 @@ public class Principal {
         }
     }
     private void listarAutores(){
-        var autores = repository.listarAutoresConLibros();
+        List<Libro> autores = repository.findAll();
+        List<AutorDTO> listaAutores = new ArrayList<>();
 
-        for (var a : autores){
-            System.out.println(a);
+        System.out.println("Autores" + autores.size());
+        for(Libro libroActual: autores)
+        {
+            System.out.println("Libro: " + libroActual.getTitulo());
+            for(var listaAuto: libroActual.getAutores()){
+                AutorDTO autorBusqueda = new AutorDTO(
+                        0L,
+                        listaAuto.getNombre(),
+                        listaAuto.getFechaNacimiento(),
+                        listaAuto.getFechaMuerte()
+                );
+                if(!listaAutores.contains(autorBusqueda))
+                {
+                    listaAutores.add(autorBusqueda);
+                }else{
+                    System.out.println("Ya existe");
+                }
+            }
         }
+
+        System.out.println("Lista de autores");
+        for (var lista : listaAutores)
+        {
+            System.out.printf("""
+                    Autor: %s
+                    Año de Nacimiento: %s
+                    Año de muerte: %s
+                    \n
+                    """,lista.nombre(),
+                    lista.fechaNacimiento() == null ? "N/A" : lista.fechaNacimiento(),
+                    lista.fechaMuerte() == null ?"N/A":lista.fechaMuerte());
+        }
+        /*for (int i=0; i < autores.size();i++)
+        {
+            List<AutorDTO> libroActual = autores.get(0).getAutores().stream()
+                    .map(a-> new AutorDTO(a.getId(),a.getNombre(),a.getFechaNacimiento(),a.getFechaMuerte()))
+                    .toList();
+            //if(listaAutores.contains(""))
+            /*AutorDTO autor = autores.get(i).getAutores().stream()
+                    .map(a -> new AutorDTO(a.getId(),a.getNombre(),a.getFechaNacimiento(),a.getFechaMuerte()))
+                    .collect(Collectors.to);
+            System.out.println(libroActual);
+        }*/
+
     }
 }
