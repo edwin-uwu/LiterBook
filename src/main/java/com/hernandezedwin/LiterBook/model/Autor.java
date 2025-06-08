@@ -8,9 +8,9 @@ public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String nombre;
     private String FechaNacimiento;
+    private String FechaMuerte;
     @ManyToOne
     private Libro libro;
 
@@ -18,6 +18,7 @@ public class Autor {
     public Autor(DatosAutor datosAutor, Libro libro){
         this.nombre = datosAutor.nombre();
         this.FechaNacimiento = datosAutor.FechaNacimiento();
+        this.FechaMuerte = datosAutor.FechaMuerte();
         this.libro = libro;
     }
 
@@ -51,5 +52,12 @@ public class Autor {
 
     public void setLibro(Libro libro) {
         this.libro = libro;
+    }
+    public String getFechaMuerte() {
+        return FechaMuerte;
+    }
+
+    public void setFechaMuerte(String fechaMuerte) {
+        FechaMuerte = fechaMuerte;
     }
 }

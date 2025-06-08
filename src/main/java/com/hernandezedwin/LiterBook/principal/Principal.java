@@ -47,6 +47,9 @@ public class Principal {
                 case 2:
                     listaDeLibros();
                     break;
+                case 3:
+                    listarAutores();
+                    break;
                 case 0:
                     System.out.println("Cerrando ...");
                     break;
@@ -67,7 +70,7 @@ public class Principal {
         var tituloLibro = teclado.nextLine();
 
         var json = api.DatosAPI(URL + "?search=" + tituloLibro.replace(" ","%20"));
-        //System.out.println(json);
+        System.out.println(json);
         var datos = conversor.obtenerDatos(json, DatosLibros.class);
         if(datos != null && !datos.libro().isEmpty()){
             //System.out.printf(datos.libro().get(0).titulo().toString());
@@ -124,6 +127,13 @@ public class Principal {
                 
                 """,libro.titulo(),libro.autores(),libro.idiomas(),libro.descargas());
             }
+        }
+    }
+    private void listarAutores(){
+        var autores = repository.listarAutoresConLibros();
+
+        for (var a : autores){
+            System.out.println(a);
         }
     }
 }
