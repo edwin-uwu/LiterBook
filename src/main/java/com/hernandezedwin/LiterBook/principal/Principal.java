@@ -34,6 +34,7 @@ public class Principal {
                 1- Buscar libro por titulo
                 2- Lista de libros
                 3- Listar autores
+                4- Listar autores vívos en determinada fecha
                 0- Salir
                 """);
             opcion = teclado.nextInt();
@@ -47,6 +48,9 @@ public class Principal {
                     break;
                 case 3:
                     listarAutores();
+                    break;
+                case 4:
+                    listarAutoresFechaVivos();
                     break;
                 case 0:
                     System.out.println("Cerrando ...");
@@ -188,5 +192,34 @@ public class Principal {
             System.out.println(libroActual);
         }*/
 
+    }
+    private void listarAutoresFechaVivos(){
+        System.out.println("listar autores desde\naño: ");
+        var desde = teclado.nextInt();
+        teclado.nextLine();//1820
+        System.out.println("Hasta\naño: ");
+        var hasta = teclado.nextInt();
+        teclado.nextLine();//1990
+        var librosLista = repository.listarLibroPoAutorVivo(desde,hasta);
+        if(librosLista.size() <= 0){
+            System.out.println("No se encontraron autores entre esas fechas");
+            return;
+        }
+
+        Set<AutorDTO> autores = new HashSet<>();
+        librosLista.forEach(l-> {
+            l.getAutores().forEach(a->{
+                autores.add(new AutorDTO(0L,a.getNombre(),a.getFechaNacimiento(),a.getFechaMuerte()));
+            });
+        });
+
+        System.out.printf("\n*** Lista de autores vivos entre os años %d y %d ***\n",desde,hasta);
+        autores.forEach(a->{
+            System.out.println("""
+                    Autor: %s
+                    Fecha de nacimiento: %s,
+                    Fecha de Muerte: %s
+                    """.formatted(a.nombre(),a.fechaNacimiento(),a.fechaMuerte()));
+        });
     }
 }
