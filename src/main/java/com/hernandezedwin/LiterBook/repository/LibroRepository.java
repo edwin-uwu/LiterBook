@@ -14,4 +14,6 @@ public interface LibroRepository extends JpaRepository<Libro,Long> {
     @Query("SELECT l FROM Libro l JOIN l.autores a WHERE " +
             "(cast(a.FechaNacimiento as integer)>= :fechaInicio AND (a.FechaMuerte IS NULL OR cast(a.FechaMuerte as integer) <= :fechaFin))")
     List<Libro> listarLibroPoAutorVivo(Integer fechaInicio, Integer fechaFin);
+    @Query("SELECT l FROM Libro l JOIN l.idioma i WHERE i.lenguaje = :idioma")
+    List<Libro> listarLibroPorIdioma(String idioma);
 }

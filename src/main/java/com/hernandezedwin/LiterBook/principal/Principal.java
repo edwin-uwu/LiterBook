@@ -35,6 +35,7 @@ public class Principal {
                 2- Lista de libros
                 3- Listar autores
                 4- Listar autores vívos en determinada fecha
+                5- Listar libros por idioma
                 0- Salir
                 """);
             opcion = teclado.nextInt();
@@ -51,6 +52,9 @@ public class Principal {
                     break;
                 case 4:
                     listarAutoresFechaVivos();
+                    break;
+                case 5:
+                    listarLibrosPorIdioma();
                     break;
                 case 0:
                     System.out.println("Cerrando ...");
@@ -220,6 +224,33 @@ public class Principal {
                     Fecha de nacimiento: %s,
                     Fecha de Muerte: %s
                     """.formatted(a.nombre(),a.fechaNacimiento(),a.fechaMuerte()));
+        });
+    }
+    private void listarLibrosPorIdioma(){
+        System.out.println("""
+                ¿Qué idioma desea buscar los libros?
+                en - Inglés
+                ru - Ruso
+                zh - Chino
+                de - Alemán
+                fr - Francés
+                es - Español
+                """);
+        var idioma = teclado.nextLine();
+        var libros = repository.listarLibroPorIdioma(idioma);
+        if(libros.size() <= 0)
+        {
+            System.out.println("No existen libros con ese idioma");
+            return;
+        }
+        System.out.println("*** Libros en idioma: " + idioma +" ***");
+        libros.forEach(l ->{
+            LibroDTO libroDTO = new LibroDTO(l.getId(),l.getTitulo(),l.getAutores().get(0).getNombre(),l.getIdioma().get(0).getLenguaje(),l.getNumeroDeDescargas());
+            System.out.println("""
+                    Titulo: %s 
+                    Autor: %s
+                    Descargas: %s 
+                    """.formatted(libroDTO.titulo(),libroDTO.autores(),libroDTO.descargas()));
         });
     }
 }
